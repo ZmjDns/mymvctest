@@ -10,38 +10,49 @@
     <FrameLayout
         android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/v_liner">
     </FrameLayout>
 
+    <View
+        android:id="@+id/v_liner"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_above="@+id/liner_tab"
+        android:background="@color/gray">
+
+    </View>
+
     <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/liner_tab"
+        android:layout_width="match_parent"
         android:layout_height="56dp"
+        android:background="@color/gray"
         android:layout_alignParentBottom="true">
 
         <TextView
             android:id="@+id/tv_first"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1" />
+            style="@style/tab_guide_style"
+            android:onClick="firstClick"
+            android:text="识别"/>
 
         <TextView
             android:id="@+id/tv_second"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            style="@style/tab_guide_style"
+            android:onClick="secondClick"
+            android:text="养护"/>
 
         <TextView
             android:id="@+id/tv_thrid"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            style="@style/tab_guide_style"
+            android:onClick="thridClick"
+            android:text="资讯"/>
 
         <TextView
             android:id="@+id/tv_fourth"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"/>
+            style="@style/tab_guide_style"
+            android:onClick="firstClick"
+            android:text="我的"/>
 
     </LinearLayout>
 

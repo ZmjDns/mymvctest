@@ -31,7 +31,7 @@ public abstract class BaseActivity extends AppCompatActivity implements IBaseVie
         mActivity = this;
         Bundle bundle = getIntent().getExtras();
         initData(bundle);
-        setContentView(bindLayout());
+        setBaseView(bindLayout());
         initView(savedInstanceState,mContentView);
         doBusiness();
 //        isNetWorkAvaliable(getApplicationContext());

@@ -9,6 +9,7 @@ import android.os.Message;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.zmj.mvc.example.AsyncTask.MyHandler;
 import com.zmj.mvc.example.AsyncTask.WeakAsyncTask;
@@ -33,17 +34,10 @@ public class MainActivity extends BaseDrawerActivity {
 
     @Override
     public void initView(Bundle savedInstanceState, View convertView) {
-        TextView tv_first,tv_second,tv_thrid,tv_fourth;
-        tv_first = findViewById(R.id.tv_first);
-        tv_second = findViewById(R.id.tv_second);
-        tv_thrid = findViewById(R.id.tv_thrid);
-        tv_fourth = findViewById(R.id.tv_fourth);
-
-        tv_first.setOnClickListener(this);
-        tv_second.setOnClickListener(this);
-        tv_thrid.setOnClickListener(this);
-        tv_fourth.setOnClickListener(this);
-
+        findViewById(R.id.tv_first).setOnClickListener(this);
+        findViewById(R.id.tv_second).setOnClickListener(this);
+        findViewById(R.id.tv_thrid).setOnClickListener(this);
+        findViewById(R.id.tv_fourth).setOnClickListener(this);
     }
 
     @Override
@@ -55,10 +49,33 @@ public class MainActivity extends BaseDrawerActivity {
     public void onWidgetClick(View view) {
         switch (view.getId()){
             case R.id.tv_first:
-
+                firstClick(view);
+                break;
+            case R.id.tv_second:
+                secondClick(view);
+                break;
+            case R.id.tv_thrid:
+                thridClick(view);
+                break;
+            case R.id.tv_fourth:
+                thridClick(view);
+                break;
+            default:
+                break;
         }
     }
 
+    private void firstClick(View view){
+        Toast.makeText(this,"我是首页！",Toast.LENGTH_SHORT).show();
+    }
+
+    private void secondClick(View view){
+        Toast.makeText(this,"我是次页！",Toast.LENGTH_SHORT).show();
+    }
+
+    private void thridClick(View view){
+        Toast.makeText(this,"我是三或四页！",Toast.LENGTH_SHORT).show();
+    }
 
 
     //AsyncTask的弱引用
