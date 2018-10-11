@@ -1,7 +1,11 @@
 package com.zmj.mvc.example;
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -12,16 +16,21 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.zmj.mvc.example.AsyncTask.MyHandler;
+import com.zmj.mvc.example.AsyncTask.OkhttpTest;
 import com.zmj.mvc.example.AsyncTask.WeakAsyncTask;
 import com.zmj.mvc.example.base.BaseDrawerActivity;
+import com.zmj.mvc.example.utils.Permissions;
+import com.zmj.mvc.example.view.activity.TestOkhttpAct;
 
 import org.w3c.dom.Text;
 
 import java.lang.ref.WeakReference;
 
+import okhttp3.OkHttpClient;
+
 public class MainActivity extends BaseDrawerActivity {
 
-
+    private static int REQ_STORAGE = 110;
     @Override
     public void initData(@NonNull Bundle bundle) {
 
@@ -38,6 +47,8 @@ public class MainActivity extends BaseDrawerActivity {
         findViewById(R.id.tv_second).setOnClickListener(this);
         findViewById(R.id.tv_thrid).setOnClickListener(this);
         findViewById(R.id.tv_fourth).setOnClickListener(this);
+
+        requestPermission();
     }
 
     @Override
@@ -58,7 +69,7 @@ public class MainActivity extends BaseDrawerActivity {
                 thridClick(view);
                 break;
             case R.id.tv_fourth:
-                thridClick(view);
+                fourthClick(view);
                 break;
             default:
                 break;
@@ -67,14 +78,30 @@ public class MainActivity extends BaseDrawerActivity {
 
     private void firstClick(View view){
         Toast.makeText(this,"我是首页！",Toast.LENGTH_SHORT).show();
+//        OkhttpTest.asyncPostString();
+        startActivity(new Intent(this, TestOkhttpAct.class));
     }
 
     private void secondClick(View view){
         Toast.makeText(this,"我是次页！",Toast.LENGTH_SHORT).show();
+        OkhttpTest.asynPostStream();
     }
 
     private void thridClick(View view){
-        Toast.makeText(this,"我是三或四页！",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"提交复杂文件",Toast.LENGTH_SHORT).show();
+//
+        try{
+            OkhttpTest.asynPostMultipartBody();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private void fourthClick(View view){
+        Toast.makeText(this,"提交FIle",Toast.LENGTH_SHORT).show();
+//        OkhttpTest.asynPostForm();
+//        OkhttpTest.asynPostFile();
+        OkhttpTest.asynInterceptor();
     }
 
 
@@ -120,6 +147,19 @@ public class MainActivity extends BaseDrawerActivity {
         }
     }
 
+    @TargetApi(23)
+    private void requestPermission(){
+        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions(Permissions.STORAGE_PERMISSION,REQ_STORAGE);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_STORAGE && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+        }
+    }
 
     @Override
     protected void onDestroy() {
