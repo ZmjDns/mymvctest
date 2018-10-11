@@ -197,4 +197,13 @@ public class TestOkhttpAct extends AppCompatActivity implements View.OnClickList
                 });
     }
 
+    @Override
+    protected void onDestroy() {
+        //Activity结束时取消请求
+//        当请求时用当前activity做为tag时，如：
+//              OKHttpUtils.post().url(url).tag(this).build()
+//              可以用以下方法统一取消
+//        OkHttpUtils.cancelTag(this);//取消以Activity.this作为tag的请求
+        super.onDestroy();
+    }
 }

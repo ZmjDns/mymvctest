@@ -3,6 +3,7 @@ package com.zmj.mvc.example;
 import android.app.Application;
 
 import com.zhy.http.okhttp.OkHttpUtils;
+import com.zhy.http.okhttp.log.LoggerInterceptor;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +19,7 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new LoggerInterceptor("TAG"))   //实现日志记录
                 .connectTimeout(10000L, TimeUnit.MILLISECONDS)
                 .readTimeout(10000L,TimeUnit.MILLISECONDS)
                 .build();
