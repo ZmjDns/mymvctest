@@ -44,13 +44,22 @@
         <Button
             android:id="@+id/btn_getPic"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:background="@drawable/gradient_box"/>
 
         <ImageView
             android:id="@+id/img_pic"
             android:layout_width="150dp"
-            android:layout_height="150dp" />
+            android:layout_height="150dp"/>
+
+        <ImageView
+            android:id="@+id/img_clip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/clip"/>
     </LinearLayout>
+
+
 
 
 </LinearLayout>

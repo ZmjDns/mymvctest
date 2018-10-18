@@ -1,0 +1,815 @@
+2018-10-8
+
+		App Basics -> Build your first app -> Start Another activity -> 添加向上导航
+
+		<activity android:name=".DisplayMessageActivity"
+				  android:parentActivityName=".MainActivity" >
+			<!-- The meta-data tag is required if you support API level 15 and lower -->
+			<meta-data
+				android:name="android.support.PARENT_ACTIVITY"
+				android:value=".MainActivity" />
+		</activity>
+
+2018-10-9
+app fundamentals
+
+		四大组件：
+
+		Activity
+
+
+
+		Service
+
+
+
+		ContrntProvider
+
+
+
+
+		BordCast
+
+
+
+		Android系统的信使：Intent
+
+
+
+		屏幕像素密度：
+
+		ldpi
+		mdpi
+		hdpi
+		xhdpi
+		xxhdpi
+		xxxhdpi
+		nodpi
+		anydpi
+
+		六个主要密度之间的缩放比为 3:4:6:8:12:16（忽略 tvdpi 密度）。因此，9x9 (ldpi) 位图相当于 12x12 (mdpi)、18x18 (hdpi)、24x24 (xhdpi) 位图，依此类推。
+
+
+2018-10-10
+App resource ->OverView ->键盘可用性
+
+
+		创建资源别名：
+			例如：使用Bitmap创建icon的引用:如图片已经有icon.png了，我想在加拿大英语和加拿大法语中这两套语言区域中使用同一版本（当然可以将图片分别放到不同的语言区域中），
+			可以这样通过别名资源来实现
+			1.将被引用的图片另存为icon_ca.png
+			2.在不同的语言区域中分别创建如下别名资源引用
+			<?xml version="1.0" encoding="utf-8"?>
+			<bitmap xmlns:android="http://schemas.android.com/apk/res/android"
+				android:src="@drawable/icon_ca" />
+			3.将此文件另存为icon.xml放在res/drawable-en-rCA/中，则会编译到可作为R.drawable.icon引用的资源中，实际上他引用的是R.drawable.icon_ca资源的别名
+
+
+
+		布局别名：
+			创建现有布局的别名，使用包装在<merge>中的<include>元素，例如：
+			<?xml version="1.0" encoding="utf-8"?>
+			<merge>
+				<include layout="@layout/main_ltr"/>
+			</merge>
+
+			将此文件另存为main.xml,则会编译到可作为R.layout.main引用的资源中，但实际上它是R.layout.main_ltr资源的别名
+
+
+		处理运行时变更：
+			在Activity销毁之前，Android会调用onSaveInstanceState()方法来保存有关应用的状态数据，然后可以在onCreate()或者onResume()方法中恢复Activity的状态
+
+			特殊情况：重启应用并恢复大量数据，成本高，用户体验差，可以用一下两种方法解决：
+				1.在配置变更期间保留对象；
+					允许Activity在配置变更时重启，但是要将有状态对象传递给新Activity实例。
+				2.自行处理配置变更
+					阻止系统在某些配置变更期间重启Activity，但要在配置确实发生变化时接受回调，这样就可以根据需要手动更新Activity
+
+				在配置变更期间保留对象：实现
+				public class RetrinFragment extends Fragmnet{
+
+					private MyDataObject data；//自己要保存的数据类型
+
+					//此方法在次Fragment中只会调用一次
+					@Override
+					public void onCreate(Bundle savedInstanceState){
+						sper.onCreate(savedInstanceState);
+						setRetainInstance(true);
+					}
+
+					public void setData(MyDataObject data){
+						this.data = data;
+					}
+
+					public MyDataObject getData(){
+						return data
+					}
+				}
+				注意：尽管可以存储任何类型的对象，但是尽量不要存储与Activity有关的对象，否则导致内存泄漏（即Activity已经销毁，但是仍被上述对象持有）
+
+				保存上述数据之后，使用FragmentManger将片段添加到Activity中。在运行时变更期间再次启动Activity时，可以获得片段中的数据对象
+				public class MyActivity extends Activity{
+
+					private RetrinFragment datafragment;
+
+					@Ovveride
+					public void onCreate(Bundle savedInstanceState){
+						super.onCreate(savedInstanceState);
+						setContentView(R.layout.main);
+
+						//Activity重启时找到恢复的fragment
+						FragmentManager fm = getFraagmentManager();
+						datafragment = (DataFragment)fm.findFragmentByTag("data");
+
+						//首次启动Activity时创建Fragment和data
+						if(datafragment == null){
+							//添加Fragment
+							datafragment = new DataFragmetn();
+							fm.beginTransaction.add(datafragment,"data").commit();
+							//将数据添加到RetrinFragment中
+							datafragment.setData(loadMyData())
+						}
+					}
+
+					@override
+					public void onDestroy(){
+						//在fragment中保存数据
+						datafragment.setData(collectionMyLoadData());
+						super.onDestroy();
+					}
+				}
+
+
+
+				自行处理配置变更，实现：
+
+				在代码清单的Activity中，声明声明可同时处理屏幕方向变更和键盘可用性变更
+				<activity android:name=".MyActivity"
+				  android:configChanges="orientation|keyboardHidden"
+				  android:label="@string/app_name">
+
+				  现在，当其中一个配置发生变化时Activity不会重启，此时MyActivity会收到对onConfingurationChanged()方法的调用。
+				  向此方法传递Configuration对象指定新设备配置。在方法中读取Configuration中的配置字段，根据新的配置信息，更改资源.
+
+				@Override
+				public void onConfigurationChanged(Configuration newConfig) {
+					super.onConfigurationChanged(newConfig);
+
+					// Checks the orientation of the screen
+					if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+						Toast.makeText(this, "landscape", Toast.LENGTH_SHORT).show();
+					} else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT){
+						Toast.makeText(this, "portrait", Toast.LENGTH_SHORT).show();
+					}
+				}
+	Localization -> localize your app
+2018-10-14
+Complex XML resouse
+	AAPT的内联资源格式：
+		对于引用多个XML资源的drable文件，如果被引用的XML文件没有被复用，则可以通过<aapt:attr>标签告诉aapt标记的子项应被视为资源并提取到自己的资源文件。
+		例如：制作一个可绘制的动画矢量
+
+		res/drawable/avd.xml		绘制矢量的XML文件
+		<?xml version="1.0" encoding="utf-8"?>
+		<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+			android:drawable="@drawable/vectordrawable" >
+			<target
+				android:name="rotationGroup"
+				android:animation="@anim/rotation" />
+		</animated-vector>
+
+		res/drawable/vectordrawable.xml  被引用的文件
+		<?xml version="1.0" encoding="utf-8"?>
+		<vector xmlns:android="http://schemas.android.com/apk/res/android"
+			android:height="64dp"
+			android:width="64dp"
+			android:viewportHeight="600"
+			android:viewportWidth="600" >
+		   <group
+				android:name="rotationGroup"
+				android:pivotX="300.0"
+				android:pivotY="300.0"
+				android:rotation="45.0" >
+				<path
+					android:fillColor="#000000"
+					android:pathData="M300,70 l 0,-70 70,70 0,0 -70,70z" />
+		   </group>
+		</vector>
+
+		res/anim/rotation.xml    被引用的文件
+		<?xml version="1.0" encoding="utf-8"?>
+		<objectAnimator xmlns:android="http://schemas.android.com/apk/android"
+			android:duration="6000"
+			android:propertyName="rotation"
+			android:valueFrom="0"
+			android:valueTo="360" />
+
+
+
+		通过aapt内联方式将以上三个文件合成一个
+
+		res/drawable/avd.xml
+		<?xml version="1.0" encoding="utf-8"?>
+		<animated-vector xmlns:android="http://schemas.android.com/apk/res/android"
+			xmlns:aapt="http://schemas.android.com/aapt" >
+
+			<aapt:attr name="android:drawable" >
+				<vector
+					android:height="64dp"
+					android:width="64dp"
+					android:viewportHeight="600"
+					android:viewportWidth="600" >
+					<group
+						android:name="rotationGroup"
+						android:pivotX="300.0"
+						android:pivotY="300.0"
+						android:rotation="45.0" >
+						<path
+							android:fillColor="#000000"
+							android:pathData="M300,70 l 0,-70 70,70 0,0 -70,70z" />
+					</group>
+				</vector>
+			</aapt:attr>
+
+			<target android:name="rotationGroup">
+				<aapt:attr name="android:animation" >
+					<objectAnimator
+						android:duration="6000"
+						android:propertyName="rotation"
+						android:valueFrom="0"
+						android:valueTo="360" />
+				</aapt:attr>
+			</target>
+		</animated-vector>
+2018-10-15
+	动画：
+		1.Property Animation
+			用XML定义的动画，用于在设定的时间内修改目标对象的属性，例如背景颜色或Alpha的值。
+			存放位置：res/anmiator/filename.xml.
+			用法：
+				java中：R.anmiator.filename
+				xml中：@[package:]anmiator/filename
+
+			句法：
+			<set
+			  android:ordering=["together" | "sequentially"]>
+
+				<objectAnimator
+					android:propertyName="string"
+					android:duration="int"
+					android:valueFrom="float | int | color"
+					android:valueTo="float | int | color"
+					android:startOffset="int"
+					android:repeatCount="int"
+					android:repeatMode=["repeat" | "reverse"]
+					android:valueType=["intType" | "floatType"]/>
+
+				<animator
+					android:duration="int"
+					android:valueFrom="float | int | color"
+					android:valueTo="float | int | color"
+					android:startOffset="int"
+					android:repeatCount="int"
+					android:repeatMode=["repeat" | "reverse"]
+					android:valueType=["intType" | "floatType"]/>
+
+				<set>
+					...
+				</set>
+			</set>
+			说明：该文件必须要有一个根元素<set>、<objectAnimator>或者<valueAnimator>。在<set>元素中你可以将其他动画元素集合在一起，包括其他<set>元素
+			property Anmiator示例：
+			res/anmiator/property_anmiator.xml
+			<set android:ordering="sequentially">
+				<set>
+					<objectAnimator
+						android:propertyName="x"
+						android:duration="500"
+						android:valueTo="400"
+						android:valueType="intType"/>
+					<objectAnimator
+						android:propertyName="y"
+						android:duration="500"
+						android:valueTo="300"
+						android:valueType="intType"/>
+				</set>
+				<objectAnimator
+					android:propertyName="alpha"
+					android:duration="500"
+					android:valueTo="1f"/>
+			</set>
+			在java用使用：
+			AnmiatorSet set = (AnmiatorSet) AnmiatorInflator.loadAnmiator(myContext,R.anmiator.property_anmiator);
+			set.setTarget(myObject);
+			set.start();
+
+		2.View Anmiation
+			支持 Tween Anmiation(补间动画) 和Frame Anmiatiom(帧动画)。
+			Tween Anmiatiom:
+				以xml定义的动画，用于执行图形上的旋转，淡入淡出，移动和拉伸等过度。
+				文件位置：
+				res/anmiator/filename.xml
+				用法：
+						java中：R.anmiator.filename
+						xml中：@[package:]anmiator/filename
+				句法：
+				<?xml version="1.0" encoding="utf-8"?>
+					<set xmlns:android="http://schemas.android.com/apk/res/android"
+						android:interpolator="@[package:]anim/interpolator_resource"
+						android:shareInterpolator=["true" | "false"] >
+						<alpha
+							android:fromAlpha="float"
+							android:toAlpha="float" />
+						<scale
+							android:fromXScale="float"
+							android:toXScale="float"
+							android:fromYScale="float"
+							android:toYScale="float"
+							android:pivotX="float"
+							android:pivotY="float" />
+						<translate
+							android:fromXDelta="float"
+							android:toXDelta="float"
+							android:fromYDelta="float"
+							android:toYDelta="float" />
+						<rotate
+							android:fromDegrees="float"
+							android:toDegrees="float"
+							android:pivotX="float"
+							android:pivotY="float" />
+						<set>
+							...
+						</set>
+					</set>
+				该文件必须要包含<alpha>、<scale>、<translate>、<rotate>中的一个根元素，或者保持其它动画元素（甚至嵌套的一组（或组）元件<set>的元件）。
+
+				示例：
+				res/anim/hyperspace_jump.xml:
+				<set xmlns:android="http://schemas.android.com/apk/res/android"
+					android:shareInterpolator="false">
+					<scale
+						android:interpolator="@android:anim/accelerate_decelerate_interpolator"
+						android:fromXScale="1.0"
+						android:toXScale="1.4"
+						android:fromYScale="1.0"
+						android:toYScale="0.6"
+						android:pivotX="50%"
+						android:pivotY="50%"
+						android:fillAfter="false"
+						android:duration="700" />
+					<set
+						android:interpolator="@android:anim/accelerate_interpolator"
+						android:startOffset="700">
+						<scale
+							android:fromXScale="1.4"
+							android:toXScale="0.0"
+							android:fromYScale="0.6"
+							android:toYScale="0.0"
+							android:pivotX="50%"
+							android:pivotY="50%"
+							android:duration="400" />
+						<rotate
+							android:fromDegrees="0"
+							android:toDegrees="-45"
+							android:toYScale="0.0"
+							android:pivotX="50%"
+							android:pivotY="50%"
+							android:duration="400" />
+					</set>
+				</set>
+				用法：
+				ImageVie image = findViewById(R.id.image);
+				Anmiation hyperspaceJump = AnmiationUtils.loadAnmiation(this,R.anmi.hyperspace_jump);
+				image.startAnimation(hyperspaceJump);
+
+			Frame Amiation
+				以XML格式定义的动画，按顺序显示一系列图像（如电影）.
+				存放位置：res/drable/filename.xml
+			资源引用：
+				Java: R.drawable.filename
+				XML: @[package:]drawable.filename
+			句法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+				android:oneshot=["true" | "false"] >
+				<item
+					android:drawable="@[package:]drawable/drawable_resource_name"
+					android:duration="integer" />
+			</animation-list>
+			说明：<Animation-list>必须是跟元素包含多个<item>元素
+
+			示例：
+			res/drawable/rocket.xml:
+			<?xml version="1.0" encoding="utf-8"?>
+			<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+				android:oneshot="false">
+				<item android:drawable="@drawable/rocket_thrust1" android:duration="200" />
+				<item android:drawable="@drawable/rocket_thrust2" android:duration="200" />
+				<item android:drawable="@drawable/rocket_thrust3" android:duration="200" />
+			</animation-list>
+
+			使用：将动画设置为视图的背景，然后播放动画
+			ImageVie rocketImage = (ImageView) findViewById(R.id.rocket_image);
+			rocketImage.setBackgroundResource(R.drawable.rocket_thrust);
+
+			rocketAnmiaction = rocketImage.getBackground();
+			if(rocketAnmiaction instanceof Animatable){
+				((Animatable)rocketAnmiaction).start();
+			}
+
+2018-10-16
+Resouce types -> Color state list:颜色状态列表资源
+	文件位置：
+		res/color/filename.xml
+	引用方法：
+		Java: R.color.filename
+		XML: @[package:]color/filename
+	句法：
+		<?xml version="1.0" encoding="utf-8"?>
+		<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+			<item
+				android:color="hex_color"
+				android:state_pressed=["true" | "false"]
+				android:state_focused=["true" | "false"]
+				android:state_selected=["true" | "false"]
+				android:state_checkable=["true" | "false"]
+				android:state_checked=["true" | "false"]
+				android:state_enabled=["true" | "false"]
+				android:state_window_focused=["true" | "false"] />
+		</selector>
+		说明：<selector>必须是根元素。包含一个或多个<item>.
+	示例：
+		res/color/button_text.xml：
+		<?xml version="1.0" encoding="utf-8"?>
+		<selector xmlns:android="http://schemas.android.com/apk/res/android">
+			<item android:state_pressed="true"
+				  android:color="#ffff0000"/> <!-- pressed -->
+			<item android:state_focused="true"
+				  android:color="#ff0000ff"/> <!-- focused -->
+			<item android:color="#ff000000"/> <!-- default -->
+		</selector>
+		此文件在View中的使用：
+		<Button
+			android:layout_width="fill_parent"
+			android:layout_height="wrap_content"
+			android:text="@string/button_text"
+			android:textColor="@color/button_text" />	<!--文件引用-->
+
+可绘制对象资源：
+	1.位图：
+		位图文件：
+			位图图形文件（.png、.jpg 或 .gif）。
+			Android 支持以下三种格式的位图文件：.png（首选）、.jpg（可接受）、.gif（不建议）。
+			可以使用文件名作为资源 ID 直接引用位图文件，也可以在 XML 中创建别名资源 ID。
+		xml位图：
+			XML 位图是在 XML 中定义的资源，指向位图文件。实际上是原始位图文件的别名。XML 可以指定位图的其他属性，例如抖动和层叠。
+			文件位置：res/drawable/filename.xml
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<bitmap
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				android:src="@[package:]drawable/drawable_resource"
+				android:antialias=["true" | "false"]
+				android:dither=["true" | "false"]
+				android:filter=["true" | "false"]
+				android:gravity=["top" | "bottom" | "left" | "right" | "center_vertical" |
+								  "fill_vertical" | "center_horizontal" | "fill_horizontal" |
+								  "center" | "fill" | "clip_vertical" | "clip_horizontal"]
+				android:mipMap=["true" | "false"]
+				android:tileMode=["disabled" | "clamp" | "repeat" | "mirror"] />
+Resource types ->Drable
+	2.九宫格：
+		具有可拉伸区域的 PNG 文件，允许根据内容调整图像大小 (.9.png)。
+		与普通位图一样，您可以直接引用九宫格文件，也可以从 XML 定义的资源引用。
+		九宫格文件：
+			文件位置：res/drawable/filename.png
+		示例：
+			<Button
+			android:layout_height="wrap_content"
+			android:layout_width="wrap_content"
+			android:background="@drawable/myninepatch" />
+		XML九宫格：
+			XML 九宫格是在 XML 中定义的资源，指向九宫格文件。XML 可以为图像指定抖动。
+			文件位置：res/drawable/filename.xml
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<nine-patch
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				android:src="@[package:]drawable/drawable_resource"
+				android:dither=["true" | "false"] />
+		示例：
+			<?xml version="1.0" encoding="utf-8"?>
+			<nine-patch xmlns:android="http://schemas.android.com/apk/res/android"
+				android:src="@drawable/myninepatch"
+				android:dither="false" />
+	3.图层列表：
+		LayerDrawable管理其他可绘制对象阵列的可绘制对象。它们按阵列顺序绘制，因此索引最大的元素绘制在顶部。
+		每个可绘制对象由单一 <layer-list> 元素内的 <item> 元素表示。
+		位置：res/drawable/filename.xml
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<layer-list
+				xmlns:android="http://schemas.android.com/apk/res/android" >
+				<item
+					android:drawable="@[package:]drawable/drawable_resource"
+					android:id="@[+][package:]id/resource_name"
+					android:top="dimension"
+					android:right="dimension"
+					android:bottom="dimension"
+					android:left="dimension" />
+			</layer-list>
+			<layer-list>必备根元素,包含一个或多个<item>。
+		示例：
+			res/drawable/layers.xml
+			<?xml version="1.0" encoding="utf-8"?>
+			<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+				<item>
+				  <bitmap android:src="@drawable/android_red"
+					android:gravity="center" />
+				</item>
+				<item android:top="10dp" android:left="10dp">
+				  <bitmap android:src="@drawable/android_green"
+					android:gravity="center" />
+				</item>
+				<item android:top="20dp" android:left="20dp">
+				  <bitmap android:src="@drawable/android_blue"
+					android:gravity="center" />
+				</item>
+			</layer-list>
+			此示例使用嵌套的 <bitmap> 元素为每个具有“中心”重力的项目定义可绘制对象资源。
+			这可确保没有图像会为了适应容器的大小而缩放，因为偏移图像会造成大小调整。
+			此布局可绘制到指定的View中
+			<ImageVie
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:src="@drawable/layers" />
+	4.状态列表
+		StateListDrawable 是在 XML 中定义的可绘制对象，它根据对象的状态，使用多个不同的图像来表示同一个图形。
+		例如，Button 小部件可以是多种不同状态（按下、聚焦或这两种状态都不是）中的其中一种，而且可以利用状态列表可绘制对象为每种状态提供不同的背景图片。
+
+		可以在 XML 文件中描述状态列表。每个图形由单一 <selector> 元素内的 <item> 元素表示。每个 <item> 均使用各种属性来描述应用作可绘制对象的图形的状态。
+
+		在每个状态变更期间，将从上到下遍历状态列表，并使用第一个与当前状态匹配的项目 —此选择并非基于“最佳匹配”，而是选择符合状态最低条件的第一个项目。
+
+		文件位置：res/drawable/filename.xml
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<selector xmlns:android="http://schemas.android.com/apk/res/android"
+				android:constantSize=["true" | "false"]
+				android:dither=["true" | "false"]
+				android:variablePadding=["true" | "false"] >
+				<item
+					android:drawable="@[package:]drawable/drawable_resource"
+					android:state_pressed=["true" | "false"]
+					android:state_focused=["true" | "false"]
+					android:state_hovered=["true" | "false"]
+					android:state_selected=["true" | "false"]
+					android:state_checkable=["true" | "false"]
+					android:state_checked=["true" | "false"]
+					android:state_enabled=["true" | "false"]
+					android:state_activated=["true" | "false"]
+					android:state_window_focused=["true" | "false"] />
+			</selector>
+			注：请记住，Android 将应用状态列表中第一个与对象当前状态匹配的项目。这就是默认值应始终放在最后的原因。
+		示例：
+			res/drawable/button.xml
+			<?xml version="1.0" encoding="utf-8"?>
+			<selector xmlns:android="http://schemas.android.com/apk/res/android">
+				<item android:state_pressed="true"
+					  android:drawable="@drawable/button_pressed" /> <!-- pressed -->
+				<item android:state_focused="true"
+					  android:drawable="@drawable/button_focused" /> <!-- focused -->
+				<item android:state_hovered="true"
+					  android:drawable="@drawable/button_focused" /> <!-- hovered -->
+				<item android:drawable="@drawable/button_normal" /> <!-- default -->
+			</selector>
+
+			button按钮中的应用
+			<Button
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:background="@drawable/button" />
+
+	5.级别列表
+		管理大量备选可绘制对象的可绘制对象，每个可绘制对象都分配有最大的备选数量。
+		使用 setLevel()设置可绘制对象的级别值会加载级别列表中 android:maxLevel 值大于或等于传递到方法的值的可绘制对象资源。
+
+		文件位置：res/drawable/filename.xml
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<level-list
+				xmlns:android="http://schemas.android.com/apk/res/android" >
+				<item
+					android:drawable="@drawable/drawable_resource"
+					android:maxLevel="integer"
+					android:minLevel="integer" />
+			</level-list>
+		示例：
+			<?xml version="1.0" encoding="utf-8"?>
+			<level-list xmlns:android="http://schemas.android.com/apk/res/android" >
+				<item
+					android:drawable="@drawable/status_off"
+					android:maxLevel="0" />
+				<item
+					android:drawable="@drawable/status_on"
+					android:maxLevel="1" />
+			</level-list>
+			在此项目应用到 View 后，可通过 setLevel() 或 setImageLevel() 更改级别。
+
+	6.转换可绘制对象
+		TransitionDrawable 是可在两种可绘制对象资源之间交错淡出的可绘制对象。
+
+		每个可绘制对象由单一 <transition> 元素内的 <item> 元素表示。不支持超过两个项目。
+		要向前转换，请调用 startTransition()。要向后转换，则调用 reverseTransition()。
+
+		文件位置：res/drawable/filename.xml
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<transition
+			xmlns:android="http://schemas.android.com/apk/res/android" >
+				<item
+					android:drawable="@[package:]drawable/drawable_resource"
+					android:id="@[+][package:]id/resource_name"
+					android:top="dimension"
+					android:right="dimension"
+					android:bottom="dimension"
+					android:left="dimension" />
+			</transition>
+		示例：
+			res/drawable/filename.xml
+			<?xml version="1.0" encoding="utf-8"?>
+			<transition xmlns:android="http://schemas.android.com/apk/res/android">
+				<item android:drawable="@drawable/on" />
+				<item android:drawable="@drawable/off" />
+			</transition>
+			将此布局绘制到View中
+			<ImageButton
+				android:id="@+id/button"
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content"
+				android:src="@drawable/transition" />
+			在代码中转换ImageButton的状态
+			ImageButton button = (ImageButton) findViewById(R.id.button);
+			TransitionDrawable drawable = (TransitionDrawable) button.getDrawable();
+			drawable.startTransition(500);//500ms后改变	ImageButton的状态
+	7.插入可绘制对象
+		在 XML 文件中定义的以指定距离插入其他可绘制对象的可绘制对象。当视图需要小于视图实际边界的背景时，此类可绘制对象很有用。
+
+		文件位置：res/drawable/filename.xml
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<inset
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				android:drawable="@drawable/drawable_resource"
+				android:insetTop="dimension"
+				android:insetRight="dimension"
+				android:insetBottom="dimension"
+				android:insetLeft="dimension" />
+		示例：
+			<?xml version="1.0" encoding="utf-8"?>
+			<inset xmlns:android="http://schemas.android.com/apk/res/android"
+				android:drawable="@drawable/background"
+				android:insetTop="10dp"
+				android:insetLeft="10dp" />
+
+	8.裁剪可绘制对象
+		在 XML 文件中定义的对其他可绘制对象进行裁剪（根据其当前级别）的可绘制对象。
+		您可以根据级别以及用于控制其在整个容器中位置的重力，来控制子可绘制对象的裁剪宽度和高度。
+		通常用于实现进度栏之类的项目。
+
+		文件位置：res/drawable/filename.xml
+
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<clip
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				android:drawable="@drawable/drawable_resource"
+				android:clipOrientation=["horizontal" | "vertical"]  <!--裁剪方向，水平裁剪 | 垂直裁剪-->
+				android:gravity=["top" | "bottom" | "left" | "right" | "center_vertical" |
+								 "fill_vertical" | "center_horizontal" | "fill_horizontal" |
+								 "center" | "fill" | "clip_vertical" | "clip_horizontal"] />
+
+		示例：
+			res/drable/clip.xml
+			<?xml version="1.0" encoding="utf-8"?>
+			<clip xmlns:android="http://schemas.android.com/apk/res/android"
+				android:drawable="@drawable/android"
+				android:clipOrientation="horizontal"
+				android:gravity="left" />
+			应用到View
+			<ImageView
+				android:id="@+id/image"
+				android:background="@drawable/clip"
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content" />
+			以下代码用于获取可绘制对象，并增加裁剪量以便逐渐显示图像
+			ImageView imageview = (ImageView) findViewById(R.id.image);
+			ClipDrawable drawable = (ClipDrawable) imageview.getDrawable();
+			drawable.setLevel(drawable.getLevel() + 1000);	//增大级别可减少裁剪量并慢慢显示图像。此处的级别为 7000
+			显示图片左侧部分，右侧一部分不显示
+			注：默认级别为 0，即完全裁剪，使图像不可见。当级别为 10,000 时，图像不会裁剪，而是完全可见。
+
+	9.缩放可绘制对象
+		在 XML 文件中定义的更改其他可绘制对象大小（根据其当前级别）的可绘制对象。
+
+		文件位置：res/drawable/filename.xml
+
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<scale
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				android:drawable="@drawable/drawable_resource"
+				android:scaleGravity=["top" | "bottom" | "left" | "right" | "center_vertical" |
+									  "fill_vertical" | "center_horizontal" | "fill_horizontal" |
+									  "center" | "fill" | "clip_vertical" | "clip_horizontal"]
+				android:scaleHeight="percentage"		<!--百分比。缩放高度-->
+				android:scaleWidth="percentage" />		<!--百分比。缩放宽度-->
+		示例：
+			<?xml version="1.0" encoding="utf-8"?>
+			<scale xmlns:android="http://schemas.android.com/apk/res/android"
+				android:drawable="@drawable/logo"
+				android:scaleGravity="center_vertical|center_horizontal"
+				android:scaleHeight="80%"
+				android:scaleWidth="80%" />
+
+	10.形状可绘制对象
+		这是在 XML 中定义的一般形状。
+
+		文件位置：res/drawable/filename.xml
+
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<shape
+				xmlns:android="http://schemas.android.com/apk/res/android"
+				android:shape=["rectangle" | "oval" | "line" | "ring"] >
+				<corners
+					android:radius="integer"
+					android:topLeftRadius="integer"
+					android:topRightRadius="integer"
+					android:bottomLeftRadius="integer"
+					android:bottomRightRadius="integer" />
+				<gradient
+					android:angle="integer"
+					android:centerX="float"
+					android:centerY="float"
+					android:centerColor="integer"
+					android:endColor="color"
+					android:gradientRadius="integer"
+					android:startColor="color"
+					android:type=["linear" | "radial" | "sweep"]
+					android:useLevel=["true" | "false"] />
+				<padding
+					android:left="integer"
+					android:top="integer"
+					android:right="integer"
+					android:bottom="integer" />
+				<size
+					android:width="integer"
+					android:height="integer" />
+				<solid
+					android:color="color" />
+				<stroke
+					android:width="integer"
+					android:color="color"
+					android:dashWidth="integer"
+					android:dashGap="integer" />
+			</shape>
+		示例：
+			res/drawable/gradient_box.xml
+			<?xml version="1.0" encoding="utf-8"?>
+			<shape xmlns:android="http://schemas.android.com/apk/res/android"
+				android:shape="rectangle">
+				<gradient
+					android:startColor="#FFFF0000"
+					android:endColor="#80FF00FF"
+					android:angle="45"/>
+				<padding android:left="7dp"
+					android:top="7dp"
+					android:right="7dp"
+					android:bottom="7dp" />
+				<corners android:radius="8dp" />
+			</shape>
+			将此xml放到View中
+			<TextView
+				android:background="@drawable/gradient_box"
+				android:layout_height="wrap_content"
+				android:layout_width="wrap_content" />
+			代码中使用：
+			Resources res = getResources();
+			Drawable shape = res. getDrawable(R.drawable.gradient_box);
+
+			TextView tv = (TextView)findViewByID(R.id.textview);
+			tv.setBackground(shape);
+2018-10-17
+Resources Types ->Layout
+
+
+
+
+
+
+
+
+
+
+
