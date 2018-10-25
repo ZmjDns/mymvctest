@@ -21,6 +21,7 @@ import com.zmj.mvc.example.AsyncTask.OkhttpTest;
 import com.zmj.mvc.example.AsyncTask.WeakAsyncTask;
 import com.zmj.mvc.example.base.BaseDrawerActivity;
 import com.zmj.mvc.example.utils.Permissions;
+import com.zmj.mvc.example.view.activity.SortDataAct;
 import com.zmj.mvc.example.view.activity.TestOkhttpAct;
 
 import org.w3c.dom.Text;
@@ -85,7 +86,8 @@ public class MainActivity extends BaseDrawerActivity {
 
     private void secondClick(View view){
         Toast.makeText(this,"我是次页！",Toast.LENGTH_SHORT).show();
-        OkhttpTest.asynPostStream();
+        startActivity(new Intent(this, SortDataAct.class));
+//        OkhttpTest.asynPostStream();
     }
 
     private void thridClick(View view){

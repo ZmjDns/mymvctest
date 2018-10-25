@@ -802,7 +802,98 @@ Resource types ->Drable
 			tv.setBackground(shape);
 2018-10-17
 Resources Types ->Layout
+Resources Types ->Layout
+	布局资源定义Activity或UI组件中UI的体系结构。
+	位置：res/drawable/filename.xml
+	语法：
+		<?xml version="1.0" encoding="utf-8"?>
+		<ViewGroup
+			xmlns:android="http://schemas.android.com/apk/res/android"
+			android:id="@[+][package:]id/resource_name"
+			android:layout_height=["dimension" | "match_parent" | "wrap_content"]
+			android:layout_width=["dimension" | "match_parent" | "wrap_content"]
+			[ViewGroup-specific attributes] >
+			<View
+				android:id="@[+][package:]id/resource_name"
+				android:layout_height=["dimension" | "match_parent" | "wrap_content"]
+				android:layout_width=["dimension" | "match_parent" | "wrap_content"]
+				[View-specific attributes] >
+				<requestFocus/>
+			</View>
+			<ViewGroup >
+				<View />
+			</ViewGroup>
+			<include layout="@layout/layout_resource"/>
+		</ViewGroup>
 
+	菜单资源
+		菜单资源定义了可以充气的应用程序菜单（选项菜单，上下文菜单或子菜单）MenuInflater。
+		文件位置：res/menu/filename.xml
+		语法：
+			<?xml version="1.0" encoding="utf-8"?>
+			<menu xmlns:android="http://schemas.android.com/apk/res/android">
+				<item android:id="@[+][package:]id/resource_name"
+					  android:title="string"
+					  android:titleCondensed="string"
+					  android:icon="@[package:]drawable/drawable_resource_name"
+					  android:onClick="method name"
+					  android:showAsAction=["ifRoom" | "never" | "withText" | "always" | "collapseActionView"]
+					  android:actionLayout="@[package:]layout/layout_resource_name"
+					  android:actionViewClass="class name"
+					  android:actionProviderClass="class name"
+					  android:alphabeticShortcut="string"
+					  android:alphabeticModifiers=["META" | "CTRL" | "ALT" | "SHIFT" | "SYM" | "FUNCTION"]
+					  android:numericShortcut="string"
+					  android:numericModifiers=["META" | "CTRL" | "ALT" | "SHIFT" | "SYM" | "FUNCTION"]
+					  android:checkable=["true" | "false"]
+					  android:visible=["true" | "false"]
+					  android:enabled=["true" | "false"]
+					  android:menuCategory=["container" | "system" | "secondary" | "alternative"]
+					  android:orderInCategory="integer" />
+				<group android:id="@[+][package:]id/resource name"
+					   android:checkableBehavior=["none" | "all" | "single"]
+					   android:visible=["true" | "false"]
+					   android:enabled=["true" | "false"]
+					   android:menuCategory=["container" | "system" | "secondary" | "alternative"]
+					   android:orderInCategory="integer" >
+					<item />
+				</group>
+				<item >
+					<menu>
+					  <item />
+					</menu>
+				</item>
+			</menu>
+
+			<menu>
+				需要。这必须是根节点。包含<item>和/或 <group>元素。
+	字符串资源
+		String
+			提供单个字符串的xml资源。
+		StringArray
+			提供字符串数组的 XML 资源。
+		Quantity Strings（plurals）
+			带有用于多元化的不同字符串的 XML 资源。
+			所有字符串都能应用某些样式设置标记和格式设置参数。
+
+	权限
+		应用也可以使用权限保护自己的组件。它可以采用由 Android 定义（如 android.Manifest.permission 中所列）或由其他应用声明的任何权限。
+		它也可以定义自己的权限。新权限用 <permission> 元素来声明。例如，Activity 可受到如下保护：
+		<manifest . . . >
+			<permission android:name="com.example.project.DEBIT_ACCT" . . . />
+			<uses-permission android:name="com.example.project.DEBIT_ACCT" />
+			. . .
+			<application . . .>
+				<activity android:name="com.example.project.FreneticActivity"
+						  android:permission="com.example.project.DEBIT_ACCT"
+						  . . . >
+					. . .
+				</activity>
+			</application>
+		</manifest>
+		请注意，在此示例中，DEBIT_ACCT 权限不仅是通过 <permission> 元素来声明，而且其使用也是通过 <uses-permission> 元素来请求。
+		要让应用的其他组件也能够启动受保护的 Activity，您必须请求其使用权限，即便保护是由应用本身施加的亦如此。
+2018-10-22 App manifest file ——>OverView
 
 
 

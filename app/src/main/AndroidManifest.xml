@@ -22,7 +22,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".view.MyMainActivity" />
-        <activity android:name=".view.activity.TestOkhttpAct"></activity>
+        <activity android:name=".view.activity.TestOkhttpAct" />
+        <activity android:name=".view.activity.SortDataAct"></activity>
     </application>
 
 </manifest>
