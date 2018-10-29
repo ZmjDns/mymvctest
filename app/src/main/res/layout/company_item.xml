@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="104dp">
+
+    <TextView
+        android:id="@+id/tv_letter"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="#eff3ff"
+        android:paddingBottom="5dip"
+        android:paddingLeft="15dip"
+        android:text="lk"
+        android:textSize="16sp"
+        android:paddingTop="5dip"
+        android:textColor="#454545"/>
+
+    <TextView
+        android:id="@+id/tv_company"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:gravity="center"
+        android:text="航空公司"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:layout_marginTop="1dp"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_phone"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:text="电话"/>
+
+        <Button
+            android:id="@+id/btn_online"
+            android:layout_width="60dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="4dp"
+            android:text="在线"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
