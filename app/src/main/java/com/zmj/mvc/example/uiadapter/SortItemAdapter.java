@@ -81,6 +81,7 @@ public class SortItemAdapter extends BaseAdapter implements SectionIndexer{
         return position;
     }
 
+    //获取Item的布局和设置监听的位置
     @Override
     public View getView(final int position, View view, ViewGroup parent) {
         ViewHolder viewHolder = null;
@@ -95,7 +96,7 @@ public class SortItemAdapter extends BaseAdapter implements SectionIndexer{
             viewHolder.btn_online = view.findViewById(R.id.btn_online);
 
             //给每一个item添加点击监听
-            //监听不能写在这里面，这里的代码只有view第一次创建的时候才会走，之后就不再走次代码，
+            //监听不能写在这里面，这里的代码只有view第一次创建的时候才会走，之后就不再走此代码，
             // 所以点击Item的时候就会拿不到对应的Item的数据
             //因此将点击回调监听写在view创建过程之外
             /*viewHolder.btn_phone.setOnClickListener(new View.OnClickListener() {

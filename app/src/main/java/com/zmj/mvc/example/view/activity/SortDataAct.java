@@ -1,5 +1,6 @@
 package com.zmj.mvc.example.view.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -147,6 +148,7 @@ public class SortDataAct extends AppCompatActivity implements SectionIndexer {
             @Override
             public void onTelephoneClick(GroupMemberBean bean) {
                 Log.d("LISTENER", "onTelephoneClick: LISTENER" + bean.getName() + bean.getPhoneNumber());
+                startActivity( new Intent(SortDataAct.this,LoginAct.class));
             }
         });
 
@@ -154,6 +156,7 @@ public class SortDataAct extends AppCompatActivity implements SectionIndexer {
             @Override
             public void onLineCLickListener(GroupMemberBean bean) {
                 Log.d("ONLINELISTENER", "onLineCLickListener: " + bean.getName() + bean.getPhoneNumber());
+                startActivity( new Intent(SortDataAct.this,LoginAct.class));
             }
         });
 

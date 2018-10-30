@@ -14,6 +14,7 @@ import okhttp3.OkHttpClient;
  * @date 2018/10/11
  */
 public class MyApplication extends Application {
+    OkHttpUtils okHttpUtils;
 
     @Override
     public void onCreate() {
@@ -24,6 +25,6 @@ public class MyApplication extends Application {
                 .readTimeout(10000L,TimeUnit.MILLISECONDS)
                 .build();
 
-        OkHttpUtils.initClient(okHttpClient);
+        okHttpUtils = OkHttpUtils.initClient(okHttpClient);
     }
 }
