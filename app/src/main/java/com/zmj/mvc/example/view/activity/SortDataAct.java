@@ -143,6 +143,20 @@ public class SortDataAct extends AppCompatActivity implements SectionIndexer {
             }
         });
 
+        adapter.setOnTelePhoneClickListener(new SortItemAdapter.OnTelePhoneClickListener() {
+            @Override
+            public void onTelephoneClick(GroupMemberBean bean) {
+                Log.d("LISTENER", "onTelephoneClick: LISTENER" + bean.getName() + bean.getPhoneNumber());
+            }
+        });
+
+        adapter.setOnLineClickListener(new SortItemAdapter.OnLineClickListener() {
+            @Override
+            public void onLineCLickListener(GroupMemberBean bean) {
+                Log.d("ONLINELISTENER", "onLineCLickListener: " + bean.getName() + bean.getPhoneNumber());
+            }
+        });
+
 
 
         //clearEditText 对象获取和       过滤功能实现
@@ -173,6 +187,7 @@ public class SortDataAct extends AppCompatActivity implements SectionIndexer {
     }
 
 
+    //根据clearText内的数据过滤数据
     private void filterData(String filterStr){
         List<GroupMemberBean> filterDataList = new ArrayList<>();
 
@@ -189,6 +204,7 @@ public class SortDataAct extends AppCompatActivity implements SectionIndexer {
             }
         }
         Collections.sort(filterDataList,pinyinComparator);
+        //拿到过滤的数据之后更新adapter
         adapter.updateListView(filterDataList);
         if (filterDataList.size() == 0){
             tvNoFriends.setVisibility(View.VISIBLE);

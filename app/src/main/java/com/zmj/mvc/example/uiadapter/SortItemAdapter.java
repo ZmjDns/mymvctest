@@ -39,6 +39,19 @@ public class SortItemAdapter extends BaseAdapter implements SectionIndexer{
 
 
 
+    //1.定义接口
+    public interface OnLineClickListener {
+        void onLineCLickListener(GroupMemberBean bean);
+    }
+    //2.声明接口
+    private OnLineClickListener onLineClickListener;
+    //暴露接口方法
+    public void setOnLineClickListener(OnLineClickListener listener){
+        this.onLineClickListener = listener;
+    }
+
+
+    //构造函数
     public SortItemAdapter(List<GroupMemberBean> list, Context context) {
         this.list = list;
         this.context = context;
@@ -82,11 +95,14 @@ public class SortItemAdapter extends BaseAdapter implements SectionIndexer{
             viewHolder.btn_online = view.findViewById(R.id.btn_online);
 
             //给每一个item添加点击监听
-            viewHolder.btn_phone.setOnClickListener(new View.OnClickListener() {
+            //监听不能写在这里面，这里的代码只有view第一次创建的时候才会走，之后就不再走次代码，
+            // 所以点击Item的时候就会拿不到对应的Item的数据
+            //因此将点击回调监听写在view创建过程之外
+            /*viewHolder.btn_phone.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     GroupMemberBean bean = list.get(position);
-//                    onTelePhoneClickListener.onTelephoneClick(bean);
+                    onTelePhoneClickListener.onTelephoneClick(bean);
                     Log.d("TEST", "onItemClick: 点击电话 " + bean.getPhoneNumber() + bean.getName());
                 }
             });
@@ -95,14 +111,30 @@ public class SortItemAdapter extends BaseAdapter implements SectionIndexer{
                 @Override
                 public void onClick(View v) {
                     GroupMemberBean bean = list.get(position);
-//                    onTelePhoneClickListener.onTelephoneClick(bean);
+                    onTelePhoneClickListener.onTelephoneClick(bean);
                     Log.d("TEST", "onItemClick: 点击电话 " + bean.getPhoneNumber() + bean.getName());
                 }
-            });
+            });*/
             view.setTag(viewHolder);
         }else {
             viewHolder = (ViewHolder) view.getTag();
         }
+
+        viewHolder.btn_phone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onTelePhoneClickListener.onTelephoneClick(list.get(position));
+            }
+        });
+
+        viewHolder.btn_online.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onLineClickListener.onLineCLickListener(list.get(position));
+            }
+        });
+
+
         //根据position获取分类的首字母的Char ascii值
         int section = getSectionForPosition(position);
 
@@ -128,9 +160,6 @@ public class SortItemAdapter extends BaseAdapter implements SectionIndexer{
 
 
     //接口部分
-
-
-
     //根据ListView的当前位置获取分类的首字母的Char ascii值
     @Override
     public int getSectionForPosition(int position) {
@@ -155,10 +184,5 @@ public class SortItemAdapter extends BaseAdapter implements SectionIndexer{
     public Object[] getSections() {
         return null;
     }
-
-
-
-
-
 
 }
