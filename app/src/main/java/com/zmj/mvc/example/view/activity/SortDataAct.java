@@ -148,7 +148,8 @@ public class SortDataAct extends AppCompatActivity implements SectionIndexer {
             @Override
             public void onTelephoneClick(GroupMemberBean bean) {
                 Log.d("LISTENER", "onTelephoneClick: LISTENER" + bean.getName() + bean.getPhoneNumber());
-                startActivity( new Intent(SortDataAct.this,LoginAct.class));
+//                startActivity( new Intent(SortDataAct.this,LoginAct.class));
+                startActivity(new Intent(SortDataAct.this,ShowGirlsAct.class));
             }
         });
 
@@ -156,7 +157,8 @@ public class SortDataAct extends AppCompatActivity implements SectionIndexer {
             @Override
             public void onLineCLickListener(GroupMemberBean bean) {
                 Log.d("ONLINELISTENER", "onLineCLickListener: " + bean.getName() + bean.getPhoneNumber());
-                startActivity( new Intent(SortDataAct.this,LoginAct.class));
+//                startActivity( new Intent(SortDataAct.this,LoginAct.class));
+                startActivity(new Intent(SortDataAct.this,ShowGirlsAct.class));
             }
         });
 

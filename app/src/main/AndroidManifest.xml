@@ -24,7 +24,8 @@
         <activity android:name=".view.MyMainActivity" />
         <activity android:name=".view.activity.TestOkhttpAct" />
         <activity android:name=".MainActivity" /> <!-- .MainActivity -->
-        <activity android:name=".view.activity.LoginAct"></activity>
+        <activity android:name=".view.activity.LoginAct" />
+        <activity android:name=".view.activity.ShowGirlsAct"></activity>
     </application>
 
 </manifest>
