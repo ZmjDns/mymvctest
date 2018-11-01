@@ -7,17 +7,18 @@ import android.widget.Toast;
 
 import com.zmj.mvc.example.R;
 import com.zmj.mvc.example.entery.Girl;
+import com.zmj.mvc.example.presenter.BasePersenter;
 import com.zmj.mvc.example.presenter.GirlPersenter;
 import com.zmj.mvc.example.uiadapter.GirlsAdapter;
 import com.zmj.mvc.example.view.IGirlView;
 
 import java.util.List;
 
-public class ShowGirlsAct extends AppCompatActivity implements IGirlView{
+public class ShowGirlsAct extends BaseActivity<IGirlView,GirlPersenter<IGirlView>> implements IGirlView{
 
     private ListView ListViewGirls;
     private GirlsAdapter adapter;
-    private  GirlPersenter girlPersenter;
+//    private  GirlPersenter girlPersenter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,19 +27,24 @@ public class ShowGirlsAct extends AppCompatActivity implements IGirlView{
         ListViewGirls = findViewById(R.id.lv_girls);
 
 //        new GirlPersenter<>(this).fetch();
-        girlPersenter = new GirlPersenter();
+//        girlPersenter = new GirlPersenter();
         //绑定
-        girlPersenter.onAttachView(this);
+//        girlPersenter.onAttachView(this);
 
-        girlPersenter.fetch();
+        girPersenter.fetch();
 
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        girlPersenter.deachView();
+    protected GirlPersenter<IGirlView> createPersenter() {
+        return new GirlPersenter<>();
     }
+
+//    @Override  解绑
+//    protected void onDestroy() {
+//        super.onDestroy();
+//        girlPersenter.deachView();
+//    }
 
     @Override
     public void showLoading() {

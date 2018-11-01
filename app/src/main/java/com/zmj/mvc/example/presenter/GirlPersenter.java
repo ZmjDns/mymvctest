@@ -15,14 +15,14 @@ import java.util.List;
  * @date 2018/10/30
  * 表示层
  */
-public class GirlPersenter<T extends IGirlView> {
-    //1.view的引用
-//    IGirlView girlView;
-
-    WeakReference<T> mViewRef;
+public class GirlPersenter<T extends IGirlView> extends BasePersenter<T> {
+//    //1.view的引用
+////    IGirlView girlView;
+//
+//    WeakReference<T> mViewRef;
 
     //2.model的引用
-    IGirlModel girlModel = new GirlModel();
+    GirlModel girlModel = new GirlModel();
 
     //构造方法
     public GirlPersenter(/*T view*/) {
@@ -30,15 +30,15 @@ public class GirlPersenter<T extends IGirlView> {
 //        this.mViewRef = new WeakReference<>(view);
     }
 
-    //进行绑定
-    public void onAttachView(T view){
-        mViewRef = new WeakReference<>(view);
-    }
-
-    //进行解绑
-    public void deachView(){
-        mViewRef.clear();
-    }
+//    //进行绑定
+//    public void onAttachView(T view){
+//        mViewRef = new WeakReference<>(view);
+//    }
+//
+//    //进行解绑
+//    public void deachView(){
+//        mViewRef.clear();
+//    }
 
 
     //4.执行操作
