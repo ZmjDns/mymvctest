@@ -14,7 +14,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".view.activity.SortDataAct">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,9 +23,10 @@
         </activity>
         <activity android:name=".view.MyMainActivity" />
         <activity android:name=".view.activity.TestOkhttpAct" />
-        <activity android:name=".MainActivity" /> <!-- .MainActivity -->
+        <activity android:name=".view.activity.SortDataAct" /> <!-- .MainActivity -->
         <activity android:name=".view.activity.LoginAct" />
-        <activity android:name=".view.activity.ShowGirlsAct"></activity>
+        <activity android:name=".view.activity.ShowGirlsAct" />
+        <activity android:name=".view.activity.ActivityUseView"></activity>
     </application>
 
 </manifest>

@@ -60,10 +60,10 @@ public class SilderBar extends View {
         int singleHeight = height / b.length;   //每一个字母高度
 
         for (int i = 0;i < b.length; i++){
-            paint.setColor(Color.rgb(33,65,98));
+            paint.setColor(Color.rgb(145,145,145));//设置字母的颜色
             paint.setTypeface(Typeface.DEFAULT_BOLD);
             paint.setAntiAlias(true);
-            paint.setTextSize(20);
+            paint.setTextSize(30);
             //选中状态
             if (i == choose){
                 paint.setColor(Color.parseColor("#3399ff"));//中间弹出字母背景

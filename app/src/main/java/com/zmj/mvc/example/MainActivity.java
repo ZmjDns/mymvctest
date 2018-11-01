@@ -6,11 +6,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +26,8 @@ import com.zmj.mvc.example.base.BaseDrawerActivity;
 import com.zmj.mvc.example.utils.Permissions;
 import com.zmj.mvc.example.view.activity.SortDataAct;
 import com.zmj.mvc.example.view.activity.TestOkhttpAct;
+import com.zmj.mvc.example.view.fragment.MyFragment;
+import com.zmj.mvc.example.view.fragment.RecongiseFragment;
 
 import org.w3c.dom.Text;
 
@@ -31,6 +36,11 @@ import java.lang.ref.WeakReference;
 import okhttp3.OkHttpClient;
 
 public class MainActivity extends BaseDrawerActivity {
+
+    private RecongiseFragment recongiseFragment;
+    private MyFragment myFragment;
+
+    private TextView tv_recongise,tv_second,tv_thrid,tv_my;
 
     private static int REQ_STORAGE = 110;
     @Override
@@ -45,12 +55,24 @@ public class MainActivity extends BaseDrawerActivity {
 
     @Override
     public void initView(Bundle savedInstanceState, View convertView) {
-        findViewById(R.id.tv_first).setOnClickListener(this);
-        findViewById(R.id.tv_second).setOnClickListener(this);
-        findViewById(R.id.tv_thrid).setOnClickListener(this);
-        findViewById(R.id.tv_fourth).setOnClickListener(this);
+//        findViewById(R.id.tv_first).setOnClickListener(this);
+//        findViewById(R.id.tv_second).setOnClickListener(this);
+//        findViewById(R.id.tv_thrid).setOnClickListener(this);
+//        findViewById(R.id.tv_fourth).setOnClickListener(this);
+
+        tv_recongise =  findViewById(R.id.tv_first);
+        tv_second = findViewById(R.id.tv_second);
+        tv_thrid = findViewById(R.id.tv_thrid);
+        tv_my = findViewById(R.id.tv_fourth);
+
+        tv_recongise.setOnClickListener(this);
+        tv_second.setOnClickListener(this);
+        tv_thrid.setOnClickListener(this);
+        tv_my.setOnClickListener(this);
 
         requestPermission();
+
+        tv_recongise.performClick();
     }
 
     @Override
@@ -62,16 +84,28 @@ public class MainActivity extends BaseDrawerActivity {
     public void onWidgetClick(View view) {
         switch (view.getId()){
             case R.id.tv_first:
-                firstClick(view);
+//                firstClick(view);
+                setSelectedFragment(0);
+                setBottomDefault();
+                tv_recongise.setTextColor(Color.parseColor("#ffff00"));
                 break;
             case R.id.tv_second:
-                secondClick(view);
+//                secondClick(view);
+                setSelectedFragment(1);
+                setBottomDefault();
+                tv_second.setTextColor(Color.parseColor("#ffff00"));
                 break;
             case R.id.tv_thrid:
-                thridClick(view);
+//                thridClick(view);
+                setSelectedFragment(2);
+                setBottomDefault();
+                tv_thrid.setTextColor(Color.parseColor("#ffff00"));
                 break;
             case R.id.tv_fourth:
-                fourthClick(view);
+//                fourthClick(view);
+                setSelectedFragment(3);
+                setBottomDefault();
+                tv_my.setTextColor(Color.parseColor("#ffff00"));
                 break;
             default:
                 break;
@@ -176,4 +210,64 @@ public class MainActivity extends BaseDrawerActivity {
             mainActHandler.removeCallbacksAndMessages(null);
         }
     }
+
+    //fragmnet change method
+    private void setSelectedFragment(int i){
+
+        FragmentManager fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        hideFragment(ft);
+
+        switch (i){
+            case 0:
+                if (recongiseFragment == null){
+                    recongiseFragment = new RecongiseFragment();
+
+                    ft.add(R.id.fragment_content,recongiseFragment);
+                }
+                ft.show(recongiseFragment);
+                break;
+            case 1:
+                if (recongiseFragment == null){
+                    recongiseFragment = new RecongiseFragment();
+                }
+                ft.show(recongiseFragment);
+                break;
+            case 2:
+                if (myFragment == null){
+                    myFragment = new MyFragment();
+
+                    ft.add(R.id.fragment_content,myFragment);
+                }
+                ft.show(myFragment);
+            case 3:
+                if (myFragment == null){
+                    myFragment = new MyFragment();
+
+                    ft.add(R.id.fragment_content,myFragment);
+                }
+                ft.show(myFragment);
+        }
+
+        ft.commit();
+    }
+
+
+    private void hideFragment(FragmentTransaction ft){
+        if (recongiseFragment != null){
+            ft.hide(recongiseFragment);
+        }
+        if (myFragment != null){
+            ft.hide(myFragment);
+        }
+    }
+
+    private void setBottomDefault(){
+        tv_recongise.setTextColor(Color.parseColor("#cfcfc2"));
+        tv_second.setTextColor(Color.parseColor("#cfcfc2"));
+        tv_thrid.setTextColor(Color.parseColor("#cfcfc2"));
+        tv_my.setTextColor(Color.parseColor("#cfcfc2"));
+    }
+
+
 }

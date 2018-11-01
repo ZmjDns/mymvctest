@@ -5,14 +5,17 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/mainact"
     tools:context=".MainActivity">
 
     <FrameLayout
-        android:id="@+id/content"
+        android:id="@+id/fragment_content"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
         android:layout_above="@+id/v_liner">
     </FrameLayout>
+
 
     <View
         android:id="@+id/v_liner"
