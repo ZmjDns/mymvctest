@@ -23,6 +23,7 @@ import com.zmj.mvc.example.AsyncTask.MyHandler;
 import com.zmj.mvc.example.AsyncTask.OkhttpTest;
 import com.zmj.mvc.example.AsyncTask.WeakAsyncTask;
 import com.zmj.mvc.example.base.BaseDrawerActivity;
+import com.zmj.mvc.example.sendmsgmvp.SendMsgFragment;
 import com.zmj.mvc.example.utils.Permissions;
 import com.zmj.mvc.example.view.activity.SortDataAct;
 import com.zmj.mvc.example.view.activity.TestOkhttpAct;
@@ -38,6 +39,7 @@ import okhttp3.OkHttpClient;
 public class MainActivity extends BaseDrawerActivity {
 
     private RecongiseFragment recongiseFragment;
+    private SendMsgFragment sendMsgFragment;
     private MyFragment myFragment;
 
     private TextView tv_recongise,tv_second,tv_thrid,tv_my;
@@ -228,10 +230,12 @@ public class MainActivity extends BaseDrawerActivity {
                 ft.show(recongiseFragment);
                 break;
             case 1:
-                if (recongiseFragment == null){
-                    recongiseFragment = new RecongiseFragment();
+                if (sendMsgFragment == null){
+//                    recongiseFragment = new RecongiseFragment();
+                    sendMsgFragment = new SendMsgFragment();
+                    ft.add(R.id.fragment_content,sendMsgFragment);
                 }
-                ft.show(recongiseFragment);
+                ft.show(sendMsgFragment);
                 break;
             case 2:
                 if (myFragment == null){
@@ -252,10 +256,12 @@ public class MainActivity extends BaseDrawerActivity {
         ft.commit();
     }
 
-
     private void hideFragment(FragmentTransaction ft){
         if (recongiseFragment != null){
             ft.hide(recongiseFragment);
+        }
+        if (sendMsgFragment != null){
+            ft.hide(sendMsgFragment);
         }
         if (myFragment != null){
             ft.hide(myFragment);

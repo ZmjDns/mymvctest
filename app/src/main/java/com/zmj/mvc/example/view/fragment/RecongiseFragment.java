@@ -79,10 +79,19 @@ public class RecongiseFragment extends Fragment implements IGetWords ,View.OnCli
                 String getWord = et_words.getText().toString();
                 //实例化Persenter的时候传RecongiseFragment.this或Activity.this,
                 // 只是为了让persenter获得IGetWords接口的引用，在Perssenter中调用接口的方法
-                new ParaseWordsPersenter<>(/*RecongiseFragment.this*/this).featch();
+//                new ParaseWordsPersenter<>(/*RecongiseFragment.this*/this).featch();
+                paraseWordsPersenter = new ParaseWordsPersenter();
+                paraseWordsPersenter.onAttach(this);
+                paraseWordsPersenter.featch();
                 break;
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        paraseWordsPersenter.onDeatch();
     }
 }

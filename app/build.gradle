@@ -51,4 +51,5 @@ dependencies {
     testImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     //    添加model
     implementation project(':mylibrary')
+    implementation 'com.google.code.gson:gson:2.8.5'
 }
