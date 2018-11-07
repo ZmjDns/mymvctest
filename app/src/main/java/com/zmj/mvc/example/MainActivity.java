@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -71,6 +72,9 @@ public class MainActivity extends BaseDrawerActivity {
         tv_second.setOnClickListener(this);
         tv_thrid.setOnClickListener(this);
         tv_my.setOnClickListener(this);
+
+        //
+        initUserId();
 
         requestPermission();
 
@@ -275,5 +279,12 @@ public class MainActivity extends BaseDrawerActivity {
         tv_my.setTextColor(Color.parseColor("#cfcfc2"));
     }
 
+    //
+    private void initUserId(){
+        SharedPreferences sp = getSharedPreferences("usinfo",0);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("BCuserID","18302451883");
+        editor.commit();
+    }
 
 }

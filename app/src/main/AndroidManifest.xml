@@ -26,7 +26,8 @@
         <activity android:name=".view.activity.SortDataAct" /> <!-- .MainActivity -->
         <activity android:name=".view.activity.LoginAct" />
         <activity android:name=".view.activity.ShowGirlsAct" />
-        <activity android:name=".view.activity.ActivityUseView"></activity>
+        <activity android:name=".view.activity.ActivityUseView" />
+        <activity android:name=".view.activity.GetBaiChuanSdkAct"></activity>
     </application>
 
 </manifest>

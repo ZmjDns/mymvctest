@@ -1,7 +1,11 @@
 package com.zmj.mvc.example;
 
 import android.app.Application;
+import android.content.SharedPreferences;
 
+import com.alibaba.mobileim.YWAPI;
+import com.alibaba.mobileim.YWIMKit;
+import com.alibaba.wxlib.util.SysUtil;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
@@ -14,7 +18,13 @@ import okhttp3.OkHttpClient;
  * @date 2018/10/11
  */
 public class MyApplication extends Application {
+
     OkHttpUtils okHttpUtils;
+
+    public static final String APPKEY = "23015524";// "25243882";
+
+
+
 
     @Override
     public void onCreate() {
@@ -26,5 +36,18 @@ public class MyApplication extends Application {
                 .build();
 
         okHttpUtils = OkHttpUtils.initClient(okHttpClient);
+
+
+        SysUtil.setApplication(this);
+
+        if(SysUtil.isTCMSServiceProcess(this)){
+            return;
+        }
+
+        if (SysUtil.isMainProcess()){
+            YWAPI.init(this,APPKEY);
+        }
     }
+
+
 }

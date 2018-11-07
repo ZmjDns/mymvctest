@@ -1,9 +1,12 @@
 package com.zmj.mvc.example.view.fragment;
 
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +14,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.alibaba.mobileim.IYWLoginService;
+import com.alibaba.mobileim.YWAPI;
+import com.alibaba.mobileim.YWIMKit;
+import com.alibaba.mobileim.YWLoginParam;
+import com.alibaba.mobileim.channel.event.IWxCallback;
+import com.zmj.mvc.example.MyApplication;
 import com.zmj.mvc.example.R;
 import com.zmj.mvc.example.view.getwordsmvp.IGetWords;
 import com.zmj.mvc.example.view.getwordsmvp.ParaseWordModel;
@@ -82,13 +91,59 @@ public class RecongiseFragment extends Fragment implements IGetWords ,View.OnCli
 //                new ParaseWordsPersenter<>(/*RecongiseFragment.this*/this).featch();
                 paraseWordsPersenter = new ParaseWordsPersenter();
                 paraseWordsPersenter.onAttach(this);
-                paraseWordsPersenter.featch();
+                /*paraseWordsPersenter.featch();*/
+                loginYWIM();
                 break;
             default:
                 break;
         }
     }
 
+    private void loginYWIM(){
+
+        String userId = "testpro1";
+        String password = "taobao1234";
+
+        final YWIMKit ywimKit = getUserInfo();
+        if (ywimKit != null){
+            IYWLoginService loginService = ywimKit.getLoginService();
+            YWLoginParam loginParam = YWLoginParam.createLoginParam(userId,password);
+
+            loginService.login(loginParam, new IWxCallback() {
+                @Override
+                public void onSuccess(Object... objects) {
+                    Log.d("LOGININFO", "onSuccess: ..........." );
+
+                    Intent intent = ywimKit.getConversationActivityIntent();
+                    getActivity().startActivity(intent);
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    Log.d("LOGININFO", "onProgress: 登陆失败"  + i );
+                }
+
+                @Override
+                public void onProgress(int i) {
+
+                }
+            });
+        }
+    }
+
+
+    //获取SDK对象实现
+    public YWIMKit getUserInfo(){
+        YWIMKit ywimKit ;
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("usinfo",0);
+        final String userId = sharedPreferences.getString("BCuserID","");
+        if (userId != null && !"".equals(userId)){
+            ywimKit = YWAPI.getIMKitInstance(userId,MyApplication.APPKEY);
+            return ywimKit;
+        }else {
+            return null;
+        }
+    }
     @Override
     public void onDestroy() {
         super.onDestroy();

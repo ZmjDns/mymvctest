@@ -1,1 +1,1 @@
-include ':app', ':bdtestmodel', ':mylibrary'
+include ':app', ':mylibrary',':wx'
