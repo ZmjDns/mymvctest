@@ -21,6 +21,7 @@ import com.alibaba.mobileim.YWLoginParam;
 import com.alibaba.mobileim.channel.event.IWxCallback;
 import com.zmj.mvc.example.MyApplication;
 import com.zmj.mvc.example.R;
+import com.zmj.mvc.example.view.TcpSocketAct;
 import com.zmj.mvc.example.view.getwordsmvp.IGetWords;
 import com.zmj.mvc.example.view.getwordsmvp.ParaseWordModel;
 import com.zmj.mvc.example.view.getwordsmvp.ParaseWordsPersenter;
@@ -34,7 +35,7 @@ public class RecongiseFragment extends Fragment implements IGetWords ,View.OnCli
     private ParaseWordsPersenter paraseWordsPersenter;
 
     private EditText et_words;
-    private Button btn_change;
+    private Button btn_change,btn_jumpNext;
 
     public RecongiseFragment() {
     }
@@ -50,8 +51,10 @@ public class RecongiseFragment extends Fragment implements IGetWords ,View.OnCli
         View view = inflater.inflate(R.layout.recongise_fragment,container,false);
         et_words = view.findViewById(R.id.et_Words);
         btn_change = view.findViewById(R.id.btn_change);
+        btn_jumpNext = view.findViewById(R.id.btn_jumpNext);
 
         btn_change.setOnClickListener(this);
+        btn_jumpNext.setOnClickListener(this);
 
 //        String word = et_words.getText().toString();
 //        new ParaseWordsPersenter<>(word,this).featch();
@@ -94,6 +97,8 @@ public class RecongiseFragment extends Fragment implements IGetWords ,View.OnCli
                 /*paraseWordsPersenter.featch();*/
                 loginYWIM();
                 break;
+            case R.id.btn_jumpNext:
+                startActivity(new Intent(getActivity(), TcpSocketAct.class));
             default:
                 break;
         }
@@ -115,6 +120,7 @@ public class RecongiseFragment extends Fragment implements IGetWords ,View.OnCli
                     Log.d("LOGININFO", "onSuccess: ..........." );
 
                     Intent intent = ywimKit.getConversationActivityIntent();
+//                    Intent intent = ywimKit.getTribeChattingActivityIntent(564815123);
                     getActivity().startActivity(intent);
                 }
 
@@ -130,7 +136,6 @@ public class RecongiseFragment extends Fragment implements IGetWords ,View.OnCli
             });
         }
     }
-
 
     //获取SDK对象实现
     public YWIMKit getUserInfo(){

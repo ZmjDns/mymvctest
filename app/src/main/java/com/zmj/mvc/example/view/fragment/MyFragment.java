@@ -1,14 +1,24 @@
 package com.zmj.mvc.example.view.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.hyphenate.chat.ChatClient;
+import com.hyphenate.chat.ChatManager;
+import com.hyphenate.chat.Message;
+import com.hyphenate.helpdesk.callback.Callback;
+import com.hyphenate.helpdesk.easeui.util.IntentBuilder;
 import com.zmj.mvc.example.R;
+
+import java.util.List;
 
 /**
  * @author Zmj
@@ -16,12 +26,114 @@ import com.zmj.mvc.example.R;
  */
 public class MyFragment extends Fragment {
 
+    private static final String TAG = "MyFragment";
+
+    private Button btn_login;
+
     public MyFragment() {
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.my_fragment,container,false);
+        View view = inflater.inflate(R.layout.my_fragment,container,false);
+
+        btn_login = view.findViewById(R.id.btn_login);
+
+        btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChatClient.getInstance().login("user2", "123456", new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        if (ChatClient.getInstance().isLoggedInBefore()){
+                            //已经登陆，可以进入会话界面
+                            Intent intent = new IntentBuilder(getActivity())
+                                    .setServiceIMNumber("kefu1")
+                                    .build();
+                            startActivity(intent);
+                        }else {
+                            //没有登陆需要登陆
+
+                        }
+                    }
+
+                    @Override
+                    public void onError(int i, String s) {
+                        Log.d(TAG, "onError: 登陆出错：" +  i + "s" + s);
+                    }
+
+                    @Override
+                    public void onProgress(int i, String s) {
+
+                    }
+                });
+            }
+        });
+        return view;
+    }
+
+    //判断是否连接服务器
+    private void isConnection(){
+        ChatClient.getInstance().addConnectionListener(new ChatClient.ConnectionListener() {
+            @Override
+            public void onConnected() {
+
+            }
+
+            @Override
+            public void onDisconnected(int i) {
+                Log.d(TAG, "onDisconnected: 没有连接服务器");
+            }
+        });
+    }
+    //添加消息监听
+    private void addInfoListener(){
+        ChatClient.getInstance().chatManager().addMessageListener(new ChatManager.MessageListener() {
+            @Override
+            public void onMessage(List<Message> list) {
+                //普通消息
+            }
+
+            @Override
+            public void onCmdMessage(List<Message> list) {
+                //收到命令消息，命令消息不存数据库，一般用来作为系统通知，例如留言评论更新，
+                //会话被客服接入，被转接，被关闭提醒
+
+            }
+
+            @Override
+            public void onMessageStatusUpdate() {
+                //消息的状态修改，一般可以用来刷新列表，显示最新的状态
+            }
+
+            @Override
+            public void onMessageSent() {
+                //发送消息后，会调用，可以在此刷新列表，显示最新的消息
+            }
+        });
+    }
+
+
+    @Override
+    public void onDestroy() {
+        //结束时退出登陆
+        ChatClient.getInstance().logout(true, new Callback() {
+            @Override
+            public void onSuccess() {
+                Log.d(TAG, "onSuccess: 退出成功");
+            }
+
+            @Override
+            public void onError(int i, String s) {
+                Log.d(TAG, "onError: 退出失败");
+            }
+
+            @Override
+            public void onProgress(int i, String s) {
+
+            }
+        });
+        super.onDestroy();
     }
 }

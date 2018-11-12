@@ -6,6 +6,10 @@ import android.content.SharedPreferences;
 import com.alibaba.mobileim.YWAPI;
 import com.alibaba.mobileim.YWIMKit;
 import com.alibaba.wxlib.util.SysUtil;
+import com.hyphenate.chat.ChatClient;
+import com.hyphenate.chat.EMClient;
+import com.hyphenate.chat.EMOptions;
+import com.hyphenate.helpdesk.easeui.UIProvider;
 import com.zhy.http.okhttp.OkHttpUtils;
 import com.zhy.http.okhttp.log.LoggerInterceptor;
 
@@ -38,7 +42,8 @@ public class MyApplication extends Application {
         okHttpUtils = OkHttpUtils.initClient(okHttpClient);
 
 
-        SysUtil.setApplication(this);
+        //阿里百川
+        /*SysUtil.setApplication(this);
 
         if(SysUtil.isTCMSServiceProcess(this)){
             return;
@@ -46,7 +51,32 @@ public class MyApplication extends Application {
 
         if (SysUtil.isMainProcess()){
             YWAPI.init(this,APPKEY);
+        }*/
+
+        //环信SDK
+       /* EMOptions options = new EMOptions();
+        //默认添加好友时，是不需要验证，此处修改为需要验证
+        options.setAcceptInvitationAlways(false);
+        //是否将消息附件上传到环信服务器，默认true是使用环信服务器上传下载，fasl需要自己处理处理附件消息的上传下载
+        options.setAutoTransferMessageAttachments(true);
+        // 是否自动下载附件类消息的缩略图等，默认为 true 这里和上边这个参数相关联
+        options.setAutoDownloadThumbnail(true);
+
+        //初始化
+        EMClient.getInstance().init(getApplicationContext(),options);
+        //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
+        EMClient.getInstance().setDebugMode(true);*/
+
+        ChatClient.Options options = new ChatClient.Options();
+        options.setAppkey("1102181112107557#zmj-test-kefu-77");
+        options.setTenantId("60284");
+        //客服SDK初始化
+        if (!ChatClient.getInstance().init(this,options)){
+            return;
         }
+        //客服EaseUI的初始化
+        UIProvider.getInstance().init(this);
+        //也可以设置其他属性
     }
 
 

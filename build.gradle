@@ -20,6 +20,8 @@ allprojects {
         google()
         jcenter()
 //        maven { url 'http://repo.baichuan-android.taobao.com/content/groups/BaichuanRepositories/' }
+        //环信IMSDK
+        //maven { url "https://raw.githubusercontent.com/HyphenateInc/Hyphenate-SDK-Android/master/repository" }
     }
 }
 

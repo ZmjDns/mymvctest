@@ -22,7 +22,7 @@ public class SendMsgModel implements ISendModel {
                 //建立连接
                 try {
                     if (socket == null){
-                        socket = new Socket("192.168.31.36",9999);
+                        socket = new Socket("192.168.18.83",9999);
                     }
                     Log.d(TAG, "connection: 与服务器建立连接：" + socket);
                     //成功
