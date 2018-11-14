@@ -5,16 +5,39 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/my_tv"
+    <EditText
+        android:id="@+id/ed_accountid"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="myFragment"/>
+        android:hint="账号"/>
+    <EditText
+        android:id="@+id/ed_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="密码"/>
     <Button
         android:id="@+id/btn_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="注册"/>
+
+    <Button
+        android:id="@+id/btn_testkefu1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="登陆"/>
+
+    <Button
+        android:id="@+id/btn_admin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="联系客服"/>
+
+    <Button
+        android:id="@+id/btn_kefu_user1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="自定义界面"/>
 
 
 </LinearLayout>

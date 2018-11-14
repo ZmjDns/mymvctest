@@ -68,8 +68,10 @@ public class MyApplication extends Application {
         EMClient.getInstance().setDebugMode(true);*/
 
         ChatClient.Options options = new ChatClient.Options();
-        options.setAppkey("1102181112107557#zmj-test-kefu-77");
-        options.setTenantId("60284");
+        //options.setAppkey("1102181112107557#zmj-test-kefu-77");
+        //options.setTenantId("60284");
+        options.setAppkey("1429181112068259#kefuchannelapp60284");
+        options.setTenantId("88791");
         //客服SDK初始化
         if (!ChatClient.getInstance().init(this,options)){
             return;

@@ -1,1 +1,1 @@
-include ':app', ':mylibrary',':wx'
+include ':app', ':mylibrary',':wx',':kefu-easeui'
