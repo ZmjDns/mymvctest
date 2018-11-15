@@ -20,6 +20,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.widget.SwipeRefreshLayout.OnRefreshListener;
 import android.text.ClipboardManager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -36,6 +37,7 @@ import android.widget.Toast;
 import com.hyphenate.chat.ChatClient;
 import com.hyphenate.chat.ChatManager;
 import com.hyphenate.chat.Conversation;
+import com.hyphenate.chat.EMTextMessageBody;
 import com.hyphenate.chat.Message;
 import com.hyphenate.helpdesk.R;
 import com.hyphenate.helpdesk.easeui.UIProvider;
@@ -53,15 +55,25 @@ import com.hyphenate.helpdesk.easeui.widget.ExtendMenu.EaseChatExtendMenuItemCli
 import com.hyphenate.helpdesk.easeui.widget.MessageList;
 import com.hyphenate.helpdesk.easeui.widget.MessageList.MessageListItemClickListener;
 import com.hyphenate.helpdesk.emojicon.Emojicon;
+import com.hyphenate.helpdesk.httpclient.HttpClient;
+import com.hyphenate.helpdesk.httpclient.HttpResponse;
 import com.hyphenate.helpdesk.manager.EmojiconManager;
 import com.hyphenate.helpdesk.model.AgentIdentityInfo;
 import com.hyphenate.helpdesk.model.QueueIdentityInfo;
 import com.hyphenate.helpdesk.model.VisitorInfo;
 import com.hyphenate.util.PathUtil;
 
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONObject;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * 可以直接new出来使用的聊天对话页面fragment，
@@ -242,6 +254,8 @@ public class ChatFragment extends BaseFragment implements ChatManager.MessageLis
         getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         ChatClient.getInstance().chatManager().addVisitorWaitListener(visitorWaitListener);
 
+        //获取欢迎语
+        getRobotWelcome();
     }
 
     ChatManager.VisitorWaitListener visitorWaitListener = new ChatManager.VisitorWaitListener() {
@@ -956,6 +970,60 @@ public class ChatFragment extends BaseFragment implements ChatManager.MessageLis
         MediaManager.pause();
     }
 
+    //获取机器人欢迎语
+    private void getRobotWelcome(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    URL url = new URL("http://kefu.easemob.com/v1/Tenants/60284/robots/visitor/greetings/app");
+
+                    HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+//                    connection.setDoOutput(true);
+//                    connection.setDoInput(true);
+//                    connection.setUseCaches(false);
+
+                    connection.setRequestMethod("GET");
+
+                    int code = connection.getResponseCode();
+
+                    if (code == 200){
+                        InputStream inputStream = connection.getInputStream();
+
+                        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                        byte[] tmp = new byte[1024];
+                        int len = -1;
+                        while ((len = inputStream.read(tmp)) != -1){
+                            outputStream.write(tmp,0,len);
+                        }
+
+                        inputStream.close();
+                        outputStream.close();
+
+                        String welcome = new String(outputStream.toByteArray(),"utf-8");
+
+                        JSONObject jsonObject = new JSONObject(welcome);
+                        int type = jsonObject.getInt("greetingTextType");
+                        String greetingText = jsonObject.optString("greetingText");
+                        if (type == 0){
+                            Message message = Message.createReceiveMessage(Message.Type.TXT);
+                            EMTextMessageBody body = null;
+                            body = new EMTextMessageBody(greetingText);
+                            message.setFrom("kefuchannelimid_853236");
+                            message.addBody(body);
+                            message.setMessageTime(System.currentTimeMillis());
+                            message.setMsgId(UUID.randomUUID().toString());
+                            ChatClient.getInstance().chatManager().saveMessage(message);
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
+            }
+        }).start();
+    }
 
 
 }

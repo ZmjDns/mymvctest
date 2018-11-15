@@ -25,7 +25,8 @@ public class MyApplication extends Application {
 
     OkHttpUtils okHttpUtils;
 
-    public static final String APPKEY = "23015524";// "25243882";
+    public static final String APPKEY ="1429181112068259#kefuchannelapp60284";// "23015524";// "25243882";
+    public static final String APPTOKEN = "60284";
 
 
 
@@ -70,8 +71,8 @@ public class MyApplication extends Application {
         ChatClient.Options options = new ChatClient.Options();
         //options.setAppkey("1102181112107557#zmj-test-kefu-77");
         //options.setTenantId("60284");
-        options.setAppkey("1429181112068259#kefuchannelapp60284");
-        options.setTenantId("88791");
+        options.setAppkey(APPKEY);
+        options.setTenantId(APPTOKEN);
         //客服SDK初始化
         if (!ChatClient.getInstance().init(this,options)){
             return;

@@ -20,7 +20,9 @@ import com.hyphenate.helpdesk.callback.Callback;
 import com.hyphenate.helpdesk.easeui.util.IntentBuilder;
 import com.hyphenate.helpdesk.model.ContentFactory;
 import com.zmj.mvc.example.R;
+import com.zmj.mvc.example.view.EaseUIAct;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -273,10 +275,11 @@ public class MyFragment extends Fragment implements View.OnClickListener{
     private void openChating(){
         if (ChatClient.getInstance().isLoggedInBefore()){
             //已经登陆，直接进入会话
-            Intent chatIntent = new IntentBuilder(getActivity())
+            Intent chatIntent = new IntentBuilder(getActivity()).setTargetClass(EaseUIAct.class)
                     .setServiceIMNumber("kefuchannelimid_853236")
                     .build();
             startActivity(chatIntent);
+
         }else {
             login();
             openChating();
