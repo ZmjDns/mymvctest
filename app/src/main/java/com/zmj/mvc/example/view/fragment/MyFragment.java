@@ -275,7 +275,7 @@ public class MyFragment extends Fragment implements View.OnClickListener{
     private void openChating(){
         if (ChatClient.getInstance().isLoggedInBefore()){
             //已经登陆，直接进入会话
-            Intent chatIntent = new IntentBuilder(getActivity()).setTargetClass(EaseUIAct.class)
+            Intent chatIntent = new IntentBuilder(getActivity()).setTargetClass(EaseUIAct.class)//自定义activity
                     .setServiceIMNumber("kefuchannelimid_853236")
                     .build();
             startActivity(chatIntent);

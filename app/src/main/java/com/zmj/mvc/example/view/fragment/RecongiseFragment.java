@@ -95,7 +95,7 @@ public class RecongiseFragment extends Fragment implements IGetWords ,View.OnCli
                 paraseWordsPersenter = new ParaseWordsPersenter();
                 paraseWordsPersenter.onAttach(this);
                 /*paraseWordsPersenter.featch();*/
-                loginYWIM();
+                //loginYWIM();
                 break;
             case R.id.btn_jumpNext:
                 startActivity(new Intent(getActivity(), TcpSocketAct.class));

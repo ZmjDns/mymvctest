@@ -16,6 +16,7 @@ import com.zmj.mvc.example.R;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -71,7 +72,10 @@ public class TcpSocketAct extends AppCompatActivity implements Runnable {
     private void connection(){
         try {
             socket = new Socket(HOST,PORT);//连接服务器
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));//接收消息的对象流
+            InputStream inputStream = socket.getInputStream();
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            in = new BufferedReader(inputStreamReader);
+//            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));//接收消息的对象流
             out = new PrintWriter(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),true);//发送消息的对象流
 
         }catch (Exception e){

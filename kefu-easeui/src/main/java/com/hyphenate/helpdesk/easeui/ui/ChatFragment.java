@@ -1019,8 +1019,6 @@ public class ChatFragment extends BaseFragment implements ChatManager.MessageLis
                 }catch (Exception e){
                     e.printStackTrace();
                 }
-
-
             }
         }).start();
     }
